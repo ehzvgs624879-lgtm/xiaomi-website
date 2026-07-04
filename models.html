@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#09090b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="CWJ TOOLS 模型管理 — 浏览和使用 180+ AI 模型，一键切换。">
+<title>模型管理 — CWJ TOOLS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.model-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text-4);cursor:pointer;transition:all 0.2s}
+.filter-btn:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.filter-btn.active{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2);color:var(--accent-3)}
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.model-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:all 0.3s var(--ease);cursor:pointer}
+.model-card:hover{transform:translateY(-2px);border-color:rgba(99,102,241,0.15);box-shadow:var(--shadow-md)}
+.model-card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.model-logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+.model-name{font-size:14px;font-weight:600}
+.model-provider{font-size:11px;color:var(--text-4)}
+.model-desc{font-size:13px;color:var(--text-4);line-height:1.6;margin-bottom:14px}
+.model-specs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.model-spec{font-size:11px;color:var(--text-5);display:flex;align-items:center;gap:4px}
+.model-spec i{font-size:10px}
+.model-price{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border)}
+.model-price-left{font-size:12px;color:var(--text-4)}
+.model-price-left strong{color:var(--text-2);font-family:var(--mono)}
+.model-use{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;background:var(--g-1);color:#fff;border:none;cursor:pointer;transition:all 0.2s}
+.model-use:hover{opacity:0.85}
+</style>
+</head>
+<body>
+<div class="loading-overlay"><svg class="svg-loader" viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="20" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:strokeDraw 1.5s ease-in-out infinite;transform-origin:center"/></svg><div class="loading-text">加载中...</div></div>
+<a class="skip-link" href="#main">跳转到主要内容</a>
+
+<nav class="nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="logo-icon">C</div> CWJ TOOLS</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a><a href="dashboard.html">控制台</a><a href="chat.html">AI 聊天</a>
+      <a href="agent.html">Agent</a><a href="models.html" class="active">模型</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" aria-label="切换主题"><i class="fas fa-sun"></i></button>
+      <a href="profile.html" class="nav-avatar">C</a>
+      <button class="nav-mobile" id="navToggle" aria-label="菜单" aria-expanded="false" aria-controls="mobileMenu"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu" role="menu">
+  <a href="index.html">首页</a><a href="dashboard.html">控制台</a><a href="chat.html">AI 聊天</a>
+  <a href="agent.html">Agent</a><a href="models.html">模型</a><a href="settings.html">设置</a>
+</div>
+<div class="dash-shell">
+  <aside class="dash-sidebar">
+    <div class="dash-sidebar-label">模型</div>
+    <div class="dash-sidebar-item active"><i class="fas fa-brain"></i> 模型市场</div>
+    <div class="dash-sidebar-item"><i class="fas fa-star"></i> 我的收藏</div>
+    <div class="dash-sidebar-item"><i class="fas fa-clock-rotate-left"></i> 使用记录</div>
+    <div class="dash-sidebar-divider"></div>
+    <div class="dash-sidebar-label">提供商</div>
+    <div class="dash-sidebar-item"><i class="fas fa-circle" style="color:var(--green);font-size:8px"></i> OpenAI</div>
+    <div class="dash-sidebar-item"><i class="fas fa-circle" style="color:var(--accent);font-size:8px"></i> Anthropic</div>
+    <div class="dash-sidebar-item"><i class="fas fa-circle" style="color:var(--cyan);font-size:8px"></i> Google</div>
+    <div class="dash-sidebar-item"><i class="fas fa-circle" style="color:var(--yellow);font-size:8px"></i> Meta</div>
+    <div class="dash-sidebar-item"><i class="fas fa-circle" style="color:var(--pink);font-size:8px"></i> DeepSeek</div>
+    <a href="settings.html" class="dash-sidebar-item"><i class="fas fa-gear"></i> 设置</a>
+  </aside>
+  <main class="dash-main" id="main">
+    <div class="dash-header">
+      <div><h1>模型管理</h1><div class="dash-header-sub">浏览和使用 180+ AI 模型</div></div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" type="text" placeholder="搜索模型..." style="max-width:240px;width:100%;height:36px;font-size:13px">
+      </div>
+    <div class="model-filters">
+      <button class="filter-btn active">全部</button>
+      <button class="filter-btn">对话</button>
+      <button class="filter-btn">推理</button>
+      <button class="filter-btn">代码</button>
+      <button class="filter-btn">多模态</button>
+      <button class="filter-btn">图像生成</button>
+      <button class="filter-btn">嵌入</button>
+      <button class="filter-btn">音频</button>
+    <div class="model-grid" data-stagger>
+      <div class="model-card" data-tilt>
+        <div class="model-card-head">
+          <div class="model-logo" style="background:rgba(34,197,94,0.1);color:#4ade80">G</div>
+          <div><div class="model-name">GPT-4o</div><div class="model-provider">OpenAI</div></div>
+          <span class="badge badge-green" style="margin-left:auto">推荐</span>
+        </div>
+        <div class="model-desc">OpenAI 旗舰多模态模型，支持文本、图像、音频输入，推理能力最强。</div>
+        <div class="model-specs"><span class="model-spec"><i class="fas fa-microchip"></i> 128K 上下文</span><span class="model-spec"><i class="fas fa-bolt"></i> 快速</span><span class="model-spec"><i class="fas fa-image"></i> 多模态</span></div>
+        <div class="model-price"><div class="model-price-left"><strong>$2.50</strong> / 1M tokens</div><button class="model-use">使用</button></div>
+          <div class="model-logo" style="background:rgba(99,102,241,0.1);color:#818cf8">C</div>
+          <div><div class="model-name">Claude 4 Opus</div><div class="model-provider">Anthropic</div></div>
+        <div class="model-desc">Anthropic 最强模型，长文本理解与创作能力卓越，安全性领先。</div>
+        <div class="model-specs"><span class="model-spec"><i class="fas fa-microchip"></i> 200K 上下文</span><span class="model-spec"><i class="fas fa-pen"></i> 创作</span><span class="model-spec"><i class="fas fa-shield"></i> 安全</span></div>
+        <div class="model-price"><div class="model-price-left"><strong>$15.00</strong> / 1M tokens</div><button class="model-use">使用</button></div>
+          <div class="model-logo" style="background:rgba(6,182,212,0.1);color:#22d3ee">G</div>
+          <div><div class="model-name">Gemini 2.5 Pro</div><div class="model-provider">Google</div></div>
+        <div class="model-desc">Google 最新模型，原生多模态，100 万 token 超长上下文。</div>
+        <div class="model-specs"><span class="model-spec"><i class="fas fa-microchip"></i> 1M 上下文</span><span class="model-spec"><i class="fas fa-image"></i> 多模态</span><span class="model-spec"><i class="fas fa-bolt"></i> 快速</span></div>
+        <div class="model-price"><div class="model-price-left"><strong>$1.25</strong> / 1M tokens</div><button class="model-use">使用</button></div>
+          <div class="model-logo" style="background:rgba(244,63,94,0.1);color:#fb7185">D</div>
+          <div><div class="model-name">DeepSeek R1</div><div class="model-provider">DeepSeek</div></div>
+          <span class="badge badge-yellow" style="margin-left:auto">热门</span>
+        <div class="model-desc">国产推理模型，数学和代码能力出色，性价比极高。</div>
+        <div class="model-specs"><span class="model-spec"><i class="fas fa-microchip"></i> 128K 上下文</span><span class="model-spec"><i class="fas fa-brain"></i> 推理</span><span class="model-spec"><i class="fas fa-code"></i> 代码</span></div>
+        <div class="model-price"><div class="model-price-left"><strong>$0.55</strong> / 1M tokens</div><button class="model-use">使用</button></div>
+          <div class="model-logo" style="background:rgba(168,85,247,0.1);color:#c084fc">L</div>
+          <div><div class="model-name">Llama 4 405B</div><div class="model-provider">Meta</div></div>
+        <div class="model-desc">Meta 开源最强模型，4050 亿参数，可商用。</div>
+        <div class="model-specs"><span class="model-spec"><i class="fas fa-microchip"></i> 128K 上下文</span><span class="model-spec"><i class="fas fa-lock-open"></i> 开源</span><span class="model-spec"><i class="fas fa-code"></i> 代码</span></div>
+        <div class="model-price"><div class="model-price-left"><strong>$0.80</strong> / 1M tokens</div><button class="model-use">使用</button></div>
+          <div class="model-logo" style="background:rgba(234,179,8,0.1);color:#fbbf24">M</div>
+          <div><div class="model-name">Mistral Large 2</div><div class="model-provider">Mistral AI</div></div>
+        <div class="model-desc">欧洲顶级模型，多语言能力优秀，代码与推理并重。</div>
+        <div class="model-specs"><span class="model-spec"><i class="fas fa-microchip"></i> 128K 上下文</span><span class="model-spec"><i class="fas fa-language"></i> 多语言</span><span class="model-spec"><i class="fas fa-code"></i> 代码</span></div>
+        <div class="model-price"><div class="model-price-left"><strong>$2.00</strong> / 1M tokens</div><button class="model-use">使用</button></div>
+  </main>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+<script>
+document.querySelectorAll('.filter-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

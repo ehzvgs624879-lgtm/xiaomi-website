@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#09090b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="CWJ TOOLS Agent 中心 — 创建和管理智能代理，自动执行复杂任务链。">
+<title>AI Agent — CWJ TOOLS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:24px}
+.agent-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:all 0.4s var(--ease);cursor:pointer;position:relative;overflow:hidden}
+.agent-card:hover{transform:translateY(-4px);border-color:rgba(99,102,241,0.2);box-shadow:0 20px 40px rgba(0,0,0,0.3)}
+.agent-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity 0.3s}
+.agent-card:hover::after{opacity:1}
+.agent-card>*{position:relative;z-index:1}
+.agent-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.agent-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.agent-status{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500}
+.agent-status .dot{width:6px;height:6px;border-radius:50%}
+.agent-status.online .dot{background:var(--green)} .agent-status.online{color:var(--green)}
+.agent-status.idle .dot{background:var(--yellow)} .agent-status.idle{color:var(--yellow)}
+.agent-status.offline .dot{background:var(--text-5)} .agent-status.offline{color:var(--text-4)}
+.agent-desc{font-size:13px;color:var(--text-4);line-height:1.6;margin-bottom:16px}
+.agent-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.agent-stats{display:flex;gap:16px;padding-top:14px;border-top:1px solid var(--border)}
+.agent-stat{font-size:12px;color:var(--text-4)}
+.agent-stat strong{color:var(--text-2);font-family:var(--mono)}
+.agent-create{
+  border:2px dashed var(--border);border-radius:var(--radius-lg);padding:24px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:260px;cursor:pointer;transition:all 0.3s;text-align:center;
+}
+.agent-create:hover{border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.03)}
+.agent-create i{font-size:28px;color:var(--text-4);margin-bottom:12px}
+.agent-create span{font-size:14px;color:var(--text-4)}
+</style>
+</head>
+<body>
+<div class="loading-overlay"><svg class="svg-loader" viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="20" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:strokeDraw 1.5s ease-in-out infinite;transform-origin:center"/></svg><div class="loading-text">加载中...</div></div>
+<a class="skip-link" href="#main">跳转到主要内容</a>
+
+<nav class="nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="logo-icon">C</div> CWJ TOOLS</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a><a href="dashboard.html">控制台</a><a href="chat.html">AI 聊天</a>
+      <a href="agent.html" class="active">Agent</a><a href="models.html">模型</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" aria-label="切换主题"><i class="fas fa-sun"></i></button>
+      <a href="profile.html" class="nav-avatar">C</a>
+      <button class="nav-mobile" id="navToggle" aria-label="菜单" aria-expanded="false" aria-controls="mobileMenu"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu" role="menu">
+  <a href="index.html">首页</a><a href="dashboard.html">控制台</a><a href="chat.html">AI 聊天</a>
+  <a href="agent.html">Agent</a><a href="models.html">模型</a><a href="settings.html">设置</a>
+</div>
+<div class="dash-shell">
+  <aside class="dash-sidebar">
+    <div class="dash-sidebar-label">Agent</div>
+    <div class="dash-sidebar-item active"><i class="fas fa-robot"></i> Agent 中心</div>
+    <div class="dash-sidebar-item"><i class="fas fa-list-check"></i> 任务队列</div>
+    <div class="dash-sidebar-item"><i class="fas fa-clock-rotate-left"></i> 执行历史</div>
+    <div class="dash-sidebar-item"><i class="fas fa-plug"></i> 插件管理</div>
+    <div class="dash-sidebar-divider"></div>
+    <div class="dash-sidebar-label">模板</div>
+    <div class="dash-sidebar-item"><i class="fas fa-briefcase"></i> 工作流模板</div>
+    <div class="dash-sidebar-item"><i class="fas fa-book"></i> Agent 文档</div>
+    <a href="settings.html" class="dash-sidebar-item"><i class="fas fa-gear"></i> 设置</a>
+  </aside>
+  <main class="dash-main" id="main">
+    <div class="dash-header">
+      <div><h1>AI Agent 中心</h1><div class="dash-header-sub">创建和管理你的智能代理</div></div>
+      <button class="btn btn-primary btn-sm" data-magnetic><i class="fas fa-plus"></i> 创建 Agent</button>
+    <div class="tabs">
+      <div class="tab active">我的 Agent</div>
+      <div class="tab">市场</div>
+      <div class="tab">模板</div>
+    <div class="agent-grid" data-stagger>
+      <div class="agent-card" data-tilt>
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--g-1)"></div>
+        <div class="agent-head">
+          <div class="agent-icon" style="background:rgba(99,102,241,0.1);color:#818cf8"><i class="fas fa-code"></i></div>
+          <div><div style="font-size:15px;font-weight:600">代码审查 Agent</div><div class="agent-status online"><span class="dot"></span> 运行中</div></div>
+        </div>
+        <div class="agent-desc">自动审查代码质量，检测 Bug、安全漏洞和性能问题，生成改进建议报告。</div>
+        <div class="agent-tags"><span class="badge badge-accent">代码</span><span class="badge badge-green">自动化</span><span class="badge badge-cyan">CI/CD</span></div>
+        <div class="agent-stats"><div class="agent-stat">任务 <strong>247</strong></div><div class="agent-stat">成功率 <strong>98.3%</strong></div><div class="agent-stat">平均耗时 <strong>12s</strong></div></div>
+      </div>
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,#06b6d4,#22c55e)"></div>
+          <div class="agent-icon" style="background:rgba(6,182,212,0.1);color:#22d3ee"><i class="fas fa-magnifying-glass-chart"></i></div>
+          <div><div style="font-size:15px;font-weight:600">竞品分析 Agent</div><div class="agent-status online"><span class="dot"></span> 运行中</div></div>
+        <div class="agent-desc">监控竞品动态，自动抓取分析产品更新、定价变化、用户评价等关键信息。</div>
+        <div class="agent-tags"><span class="badge badge-cyan">分析</span><span class="badge badge-yellow">监控</span><span class="badge badge-accent">报告</span></div>
+        <div class="agent-stats"><div class="agent-stat">任务 <strong>89</strong></div><div class="agent-stat">成功率 <strong>95.7%</strong></div><div class="agent-stat">平均耗时 <strong>45s</strong></div></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,#f43f5e,#f97316)"></div>
+          <div class="agent-icon" style="background:rgba(244,63,94,0.1);color:#fb7185"><i class="fas fa-pen-nib"></i></div>
+          <div><div style="font-size:15px;font-weight:600">内容创作 Agent</div><div class="agent-status idle"><span class="dot"></span> 空闲</div></div>
+        <div class="agent-desc">批量生成营销文案、社媒帖子、博客文章，支持多种风格和语言。</div>
+        <div class="agent-tags"><span class="badge badge-red">写作</span><span class="badge badge-accent">营销</span><span class="badge badge-green">多语言</span></div>
+        <div class="agent-stats"><div class="agent-stat">任务 <strong>512</strong></div><div class="agent-stat">成功率 <strong>99.1%</strong></div><div class="agent-stat">平均耗时 <strong>8s</strong></div></div>
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,#eab308,#22c55e)"></div>
+          <div class="agent-icon" style="background:rgba(234,179,8,0.1);color:#fbbf24"><i class="fas fa-chart-line"></i></div>
+          <div><div style="font-size:15px;font-weight:600">数据分析 Agent</div><div class="agent-status online"><span class="dot"></span> 运行中</div></div>
+        <div class="agent-desc">自动分析 CSV/Excel 数据，生成可视化图表和洞察报告。</div>
+        <div class="agent-tags"><span class="badge badge-yellow">数据</span><span class="badge badge-accent">可视化</span><span class="badge badge-cyan">报告</span></div>
+        <div class="agent-stats"><div class="agent-stat">任务 <strong>156</strong></div><div class="agent-stat">成功率 <strong>97.4%</strong></div><div class="agent-stat">平均耗时 <strong>22s</strong></div></div>
+      <div data-empty data-empty-icon="🤖" data-empty-title="创建新 Agent" data-empty-desc="自定义你的智能代理"
+        <i class="fas fa-plus"></i>
+        <span>创建新 Agent</span>
+        <div style="font-size:12px;color:var(--text-5);margin-top:6px">自定义你的智能代理</div>
+  </main>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+</body>
+</html>

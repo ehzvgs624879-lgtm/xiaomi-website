@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#09090b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="CWJ TOOLS AI 聊天 — 多模型智能对话，支持 GPT-4o、Claude 4、Gemini 2.5 等。">
+<title>AI 聊天 — CWJ TOOLS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.chat-shell{display:grid;grid-template-columns:280px 1fr;height:100vh;padding-top:var(--nav-h)}
+.chat-list{
+  background:var(--bg-2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.chat-list-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chat-list-header h3{font-size:14px;font-weight:600}
+.chat-new{width:32px;height:32px;border-radius:8px;background:var(--g-1);border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.chat-new:hover{opacity:0.85;transform:scale(1.05)}
+.chat-search{padding:12px 16px}
+.chat-search input{width:100%;height:36px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--text);font-size:13px;padding:0 12px;outline:none;font-family:var(--font)}
+.chat-search input:focus{border-color:rgba(99,102,241,0.3)}
+.chat-items{flex:1;overflow-y:auto;padding:4px 8px}
+.chat-item{
+  padding:12px;border-radius:10px;cursor:pointer;transition:all 0.2s;margin-bottom:2px;
+.chat-item:hover{background:rgba(255,255,255,0.03)}
+.chat-item.active{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.12)}
+.chat-item-title{font-size:13px;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-item-preview{font-size:12px;color:var(--text-4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-item-time{font-size:10px;color:var(--text-5);margin-top:4px}
+.chat-main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.chat-header{
+  padding:12px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(9,9,11,0.6);backdrop-filter:blur(12px);
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.chat-header-title{font-size:14px;font-weight:600}
+.chat-header-model{font-size:11px;color:var(--text-4);display:flex;align-items:center;gap:4px}
+.chat-header-model .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.chat-header-actions{display:flex;gap:6px}
+.chat-header-actions button{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--text-4);font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all 0.2s;
+.chat-header-actions button:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+.chat-messages{flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px}
+.msg{display:flex;gap:12px;max-width:85%}
+.msg.ai{align-self:flex-start}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{
+  width:32px;height:32px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+.msg.ai .msg-avatar{background:var(--g-1);color:#fff}
+.msg.user .msg-avatar{background:rgba(255,255,255,0.08);color:var(--text-4)}
+.msg-body{
+  padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.7;
+.msg.ai .msg-body{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg.user .msg-body{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.15);border-bottom-right-radius:4px}
+.msg-body code{font-family:var(--mono);font-size:12px;background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;color:var(--green)}
+.msg-body pre{background:rgba(0,0,0,0.4);border-radius:8px;padding:14px;margin:10px 0;overflow-x:auto;font-size:12px;line-height:1.6;border:1px solid var(--border)}
+.msg-body pre code{background:none;padding:0;color:var(--text)}
+.msg-time{font-size:10px;color:var(--text-5);margin-top:4px}
+.msg-actions{display:flex;gap:4px;margin-top:6px}
+.msg-actions button{
+  font-size:11px;color:var(--text-5);background:none;border:none;cursor:pointer;
+  padding:2px 6px;border-radius:4px;transition:all 0.2s;
+.msg-actions button:hover{background:rgba(255,255,255,0.04);color:var(--text-4)}
+.chat-input-area{
+  padding:16px 20px;border-top:1px solid var(--border);
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-textarea{
+  flex:1;min-height:44px;max-height:160px;border-radius:12px;
+  border:1px solid var(--border);background:rgba(255,255,255,0.03);
+  color:var(--text);font-size:14px;padding:12px 16px;outline:none;
+  font-family:var(--font);resize:none;line-height:1.5;
+.chat-textarea:focus{border-color:rgba(99,102,241,0.4)}
+.chat-send{
+  width:44px;height:44px;border-radius:12px;background:var(--g-1);
+  border:none;color:#fff;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;
+.chat-send:hover{opacity:0.85;transform:scale(1.05)}
+.chat-tools{display:flex;gap:6px;margin-top:8px}
+.chat-tools button{
+  font-size:11px;color:var(--text-4);background:none;border:1px solid var(--border);
+  padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;gap:4px;
+.chat-tools button:hover{background:rgba(255,255,255,0.04);color:var(--text)}
+@media(max-width:768px){
+  .chat-shell{grid-template-columns:1fr}
+  .chat-list{display:none}
+</style>
+</head>
+<body>
+<div class="loading-overlay"><svg class="svg-loader" viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="20" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:strokeDraw 1.5s ease-in-out infinite;transform-origin:center"/></svg><div class="loading-text">加载中...</div></div>
+<a class="skip-link" href="#main">跳转到主要内容</a>
+
+<nav class="nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="logo-icon">C</div> CWJ TOOLS</a>
+    <div class="nav-links">
+      <a href="index.html">首页</a><a href="dashboard.html">控制台</a>
+      <a href="chat.html" class="active">AI 聊天</a><a href="agent.html">Agent</a><a href="models.html">模型</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" aria-label="切换主题"><i class="fas fa-sun"></i></button>
+      <a href="profile.html" class="nav-avatar">C</a>
+      <button class="nav-mobile" id="navToggle" aria-label="菜单" aria-expanded="false" aria-controls="mobileMenu"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu" role="menu">
+  <a href="index.html">首页</a><a href="dashboard.html">控制台</a><a href="chat.html">AI 聊天</a>
+  <a href="agent.html">Agent</a><a href="models.html">模型</a><a href="settings.html">设置</a>
+</div>
+<div class="chat-shell">
+  <div class="chat-list">
+    <div class="chat-list-header"><h3>对话列表</h3><button class="chat-new" title="新对话"><i class="fas fa-plus"></i></button></div>
+    <div class="chat-search"><input type="text" placeholder="搜索对话..."></div>
+    <div class="chat-items">
+      <div class="chat-item active"><div class="chat-item-title">Python 快速排序实现</div><div class="chat-item-preview">好的，这是一个高效的快速排序...</div><div class="chat-item-time">2 分钟前</div></div>
+      <div class="chat-item"><div class="chat-item-title">营销文案生成</div><div class="chat-item-preview">根据您的品牌调性，我建议...</div><div class="chat-item-time">15 分钟前</div></div>
+      <div class="chat-item"><div class="chat-item-title">产品需求分析</div><div class="chat-item-preview">从用户画像来看，核心需求...</div><div class="chat-item-time">1 小时前</div></div>
+      <div class="chat-item"><div class="chat-item-title">React 组件优化</div><div class="chat-item-preview">建议使用 useMemo 和 useCallback...</div><div class="chat-item-time">3 小时前</div></div>
+      <div class="chat-item"><div class="chat-item-title">论文翻译：量子计算</div><div class="chat-item-preview">Quantum computing represents...</div><div class="chat-item-time">昨天</div></div>
+      <div class="chat-item"><div class="chat-item-title">旅行计划：东京 5 日游</div><div class="chat-item-preview">第一天建议浅草寺 → 晴空塔...</div><div class="chat-item-time">昨天</div></div>
+  <div class="chat-main">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div>
+          <div class="chat-header-title">Python 快速排序实现</div>
+          <div class="chat-header-model"><span class="dot"></span> GPT-4o · 3,241 tokens</div>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button title="分享"><i class="fas fa-share-nodes"></i></button>
+        <button title="导出"><i class="fas fa-download"></i></button>
+        <button title="更多"><i class="fas fa-ellipsis"></i></button>
+        <button title="导出" data-export="csv"><i class="fas fa-download"></i></button>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg ai">
+        <div class="msg-avatar"><i class="fas fa-bolt"></i></div>
+        <div><div class="msg-body">你好！我是 CWJ TOOLS 的 AI 助手。我可以帮你解答问题、编写代码、分析数据、生成创意内容等。有什么可以帮你的？</div><div class="msg-time">14:30</div></div>
+      <div class="msg user">
+        <div class="msg-avatar">C</div>
+        <div><div class="msg-body">帮我用 Python 写一个快速排序算法，要有详细注释</div><div class="msg-time">14:31</div></div>
+          <div class="msg-body">
+            好的！这是一个带详细注释的快速排序实现：<br><br>
+            <pre><code>def quicksort(arr):
+    """
+    快速排序算法
+    时间复杂度: O(n log n) 平均, O(n²) 最坏
+    空间复杂度: O(log n)
+    # 基线情况：数组长度 <= 1 时直接返回
+    if len(arr) &lt;= 1:
+        return arr
+    
+    # 选择基准元素（这里选中间元素）
+    pivot = arr[len(arr) // 2]
+    # 三路划分
+    left = [x for x in arr if x &lt; pivot]   # 小于基准
+    mid = [x for x in arr if x == pivot]    # 等于基准
+    right = [x for x in arr if x &gt; pivot]   # 大于基准
+    # 递归排序并合并
+    return quicksort(left) + mid + quicksort(right)</code></pre>
+            <strong>核心思想：</strong>选取一个基准值（pivot），将数组分为三部分，递归排序。<br><br>
+            <strong>优化建议：</strong><br>
+            • 使用 <code>random.choice(arr)</code> 随机选基准，避免最坏情况<br>
+            • 对小数组（n &lt; 10）切换为插入排序<br>
+            • 使用原地分区（Lomuto/Hoare partition）减少内存分配
+          </div>
+          <div class="msg-actions"><button><i class="fas fa-copy"></i> 复制</button><button><i class="fas fa-redo"></i> 重新生成</button><button><i class="fas fa-thumbs-up"></i></button></div>
+          <div class="msg-time">14:31</div>
+        <div><div class="msg-body">再写一个归并排序，对比一下两种算法</div><div class="msg-time">14:32</div></div>
+            归并排序实现：<br><br>
+            <pre><code>def merge_sort(arr):
+    """归并排序 - 稳定的分治排序算法"""
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
+def merge(left, right):
+    """合并两个有序数组"""
+    result = []
+    i = j = 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            result.append(left[i]); i += 1
+        else:
+            result.append(right[j]); j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result</code></pre>
+            <strong>对比：</strong>
+            <table style="font-size:12px;margin-top:8px;border-collapse:collapse;width:100%">
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px;font-weight:600">指标</td><td style="padding:6px;font-weight:600">快速排序</td><td style="padding:6px;font-weight:600">归并排序</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px">时间(平均)</td><td style="padding:6px;color:var(--green)">O(n log n)</td><td style="padding:6px;color:var(--green)">O(n log n)</td></tr>
+              <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px">空间</td><td style="padding:6px;color:var(--green)">O(log n)</td><td style="padding:6px;color:var(--yellow)">O(n)</td></tr>
+              <tr><td style="padding:6px">稳定性</td><td style="padding:6px;color:var(--yellow)">不稳定</td><td style="padding:6px;color:var(--green)">稳定</td></tr>
+            </table>
+          <div class="msg-time">14:32</div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="chatInput" placeholder="输入消息... (Shift+Enter 换行)" rows="1"></textarea>
+        <button class="chat-send" data-magnetic><i class="fas fa-paper-plane"></i></button>
+      <div class="chat-tools">
+        <button><i class="fas fa-paperclip"></i> 附件</button>
+        <button><i class="fas fa-image"></i> 图片</button>
+        <button><i class="fas fa-code"></i> 代码</button>
+        <button><i class="fas fa-globe"></i> 联网搜索</button>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+<script>
+/* Auto-resize textarea */
+var ta=document.querySelector('.chat-textarea');
+if(ta){ta.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,160)+'px'})}
+/* Init chat simulation */
+ChatSim.init('chatMessages','chatInput');initMsgCollapse();
+/* Export chat */
+document.querySelectorAll('[data-export]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var msgs=[];document.querySelectorAll('.chat-messages .msg').forEach(function(m){
+      var role=m.classList.contains('ai')?'AI':'User';
+      var text=m.querySelector('.msg-body').textContent.trim();
+      msgs.push([role,text]);
+    });
+    ExportUtil.csv(['角色','内容'],msgs,'chat-export.csv');
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#09090b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="CWJ TOOLS — AI 全能工具平台。GPT-4o、Claude 4、Gemini 2.5 等 180+ 模型一站式接入，AI 聊天、Agent、绘图、代码助手全场景覆盖。">
+<meta property="og:title" content="CWJ TOOLS — AI 全能工具平台">
+<meta property="og:description" content="180+ AI 模型一站式接入，全场景智能解决方案">
+<meta property="og:type" content="website">
+<title>CWJ TOOLS — AI 全能工具平台</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.tools-grid-featured{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.tool-featured{
+  background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:28px;transition:all 0.4s var(--ease);cursor:pointer;position:relative;overflow:hidden;
+}
+.tool-featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--g-1);opacity:0;transition:opacity 0.3s}
+.tool-featured:hover::before{opacity:1}
+.tool-featured:hover{transform:translateY(-4px);border-color:rgba(99,102,241,0.2);box-shadow:0 20px 50px rgba(0,0,0,0.3)}
+.tool-featured .tf-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.tool-featured .tf-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.tool-featured h3{font-size:16px;font-weight:600;margin-bottom:4px}
+.tool-featured .tf-sub{font-size:12px;color:var(--text-4)}
+.tool-featured p{font-size:13px;color:var(--text-4);line-height:1.7;margin-bottom:16px}
+.tool-featured .tf-footer{display:flex;align-items:center;justify-content:space-between}
+.tool-featured .tf-tags{display:flex;gap:6px}
+.tool-featured .tf-tags span{font-size:10px;padding:3px 8px;border-radius:100px;font-weight:500}
+.tool-featured .tf-arrow{color:var(--text-4);font-size:12px;transition:all 0.3s}
+.tool-featured:hover .tf-arrow{color:var(--accent-3);transform:translateX(3px)}
+.feature-row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-bottom:80px}
+.feature-row.reverse{direction:rtl}
+.feature-row.reverse>*{direction:ltr}
+.feature-visual{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-2xl);padding:32px;position:relative;overflow:hidden;min-height:360px;display:flex;align-items:center;justify-content:center}
+.feature-code{font-family:var(--mono);font-size:13px;line-height:1.9;background:rgba(0,0,0,0.4);border-radius:12px;padding:20px;border:1px solid var(--border);overflow-x:auto;position:relative;z-index:1;width:100%}
+.feature-code .kw{color:#c084fc}.feature-code .str{color:#86efac}.feature-code .fn{color:#93c5fd}.feature-code .cm{color:#52525b}
+.feature-text h3{font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:14px}
+.feature-text p{font-size:14px;color:var(--text-4);line-height:1.7;margin-bottom:20px}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.feature-list li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-4)}
+.feature-list li i{color:var(--accent);font-size:10px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,0.1);border-radius:50%}
+@media(max-width:1024px){.tools-grid-featured{grid-template-columns:1fr 1fr}.feature-row{grid-template-columns:1fr;gap:32px}.feature-row.reverse{direction:ltr}}
+@media(max-width:768px){.tools-grid-featured{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="splash-screen" id="splashScreen"><div class="splash-logo">C</div><div class="splash-text">CWJ TOOLS</div><div class="splash-bar"><div class="splash-bar-fill"></div></div></div>
+<div class="loading-overlay"><svg class="svg-loader" viewBox="0 0 48 48" width="48" height="48"><circle cx="24" cy="24" r="20" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="120" style="animation:strokeDraw 1.5s ease-in-out infinite;transform-origin:center"/></svg><div class="loading-text">加载中...</div></div>
+<a class="skip-link" href="#main">跳转到主要内容</a>
+
+<nav class="nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="logo-icon">C</div> CWJ TOOLS</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="dashboard.html">控制台</a>
+      <a href="chat.html">AI 聊天</a>
+      <a href="agent.html">Agent</a>
+      <a href="models.html">模型</a>
+    </div>
+    <div class="nav-right">
+      <a href="login.html" class="btn btn-primary btn-sm" data-magnetic>登录</a>
+      <button class="theme-toggle" aria-label="切换主题"><i class="fas fa-sun"></i></button>
+      <a href="profile.html" class="nav-avatar" title="用户中心">C</a>
+      <button class="nav-mobile" id="navToggle" aria-label="菜单" aria-expanded="false" aria-controls="mobileMenu"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu" role="menu">
+  <a href="index.html">首页</a><a href="dashboard.html">控制台</a><a href="chat.html">AI 聊天</a>
+  <a href="agent.html">Agent</a><a href="models.html">模型</a><a href="settings.html">设置</a><a href="login.html">登录</a>
+</div>
+<section class="hero breath-bg" id="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+  <div class="hero-glow hero-glow-3"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span> v3.0 全新发布 — 多模型引擎已就绪</div>
+    <div class="hero-title-svg" style="margin-bottom:24px">
+    <svg viewBox="0 0 600 120" width="100%" height="120" style="overflow:visible">
+      <text x="300" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="52" font-weight="800" fill="none" stroke="var(--text)" stroke-width="1.5" letter-spacing="-2">AI 全能工具平台</text>
+      <text x="300" y="105" text-anchor="middle" font-family="Inter,sans-serif" font-size="52" font-weight="800" fill="none" stroke="var(--text)" stroke-width="1.5" letter-spacing="-2">重新定义智能生产力</text>
+      <text x="300" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="52" font-weight="800" fill="var(--text)" letter-spacing="-2" style="opacity:0;animation:svgFillIn 0.5s ease 2.2s forwards">AI 全能工具平台</text>
+      <text x="300" y="105" text-anchor="middle" font-family="Inter,sans-serif" font-size="52" font-weight="800" fill="var(--text)" letter-spacing="-2" style="opacity:0;animation:svgFillIn 0.5s ease 2.4s forwards">重新定义智能生产力</text>
+    </svg>
+    <style>@keyframes svgFillIn{to{opacity:1}}</style>
+    </div>
+    <p>CWJ TOOLS 将 ChatGPT、Claude、Gemini、Midjourney 等顶级 AI 能力融为一体，为开发者、创作者与企业提供一站式智能解决方案。</p>
+    <div class="hero-btns">
+      <a href="dashboard.html" class="btn btn-primary btn-lg" data-magnetic><i class="fas fa-rocket"></i> 免费开始</a>
+      <a href="chat.html" class="btn btn-secondary btn-lg" data-magnetic><i class="fas fa-play"></i> 在线体验</a>
+    <div class="hero-metrics">
+      <div class="hero-metric"><div class="num" data-count="2600000" data-large="true" data-suffix="+">0</div><div class="label">活跃用户</div></div>
+      <div class="hero-metric"><div class="num" data-count="180" data-suffix="+">0</div><div class="label">AI 模型</div></div>
+      <div class="hero-metric"><div class="num" data-count="99.97" data-decimals="2" data-suffix="%">0</div><div class="label">可用率</div></div>
+      <div class="hero-metric"><div class="num" data-count="38" data-suffix="ms">0</div><div class="label">平均延迟</div></div>
+</section>
+<section class="section" id="tools">
+  <div class="section-inner">
+    <div class="reveal"><div class="section-label"><i class="fas fa-grid-2"></i> AI 工具中心</div><h2 class="section-title">一站式 AI 工具矩阵</h2><p class="section-desc">覆盖对话、搜索、写作、翻译、绘图、编程、文档处理全场景。</p></div>
+    <div class="tools-grid-featured" data-stagger>
+      <div class="tool-featured reveal" data-tilt>
+        <div class="tf-head"><div class="tf-icon" style="background:rgba(99,102,241,0.1);color:#818cf8"><i class="fas fa-comments"></i></div><div><h3>AI 聊天</h3><div class="tf-sub">多模型智能对话</div></div></div>
+        <p>支持 GPT-4o、Claude 4、Gemini 2.5 等顶级模型，上下文记忆与角色扮演。</p>
+        <div class="tf-footer"><div class="tf-tags"><span class="badge badge-accent">GPT-4o</span><span class="badge badge-cyan">Claude 4</span></div><span class="tf-arrow"><i class="fas fa-arrow-right"></i></span></div>
+      </div>
+        <div class="tf-head"><div class="tf-icon" style="background:rgba(244,63,94,0.1);color:#fb7185"><i class="fas fa-palette"></i></div><div><h3>AI 绘图</h3><div class="tf-sub">文字秒变高清图像</div></div></div>
+        <p>DALL·E 3、Midjourney、Stable Diffusion，多引擎图像生成。</p>
+        <div class="tf-footer"><div class="tf-tags"><span class="badge badge-red">DALL·E 3</span><span class="badge badge-yellow">MJ</span></div><span class="tf-arrow"><i class="fas fa-arrow-right"></i></span></div>
+        <div class="tf-head"><div class="tf-icon" style="background:rgba(251,191,36,0.1);color:#fbbf24"><i class="fas fa-code"></i></div><div><h3>代码助手</h3><div class="tf-sub">开发者效率倍增</div></div></div>
+        <p>智能补全、代码审查、Bug 修复、重构建议，30+ 编程语言。</p>
+        <div class="tf-footer"><div class="tf-tags"><span class="badge badge-green">30+ 语言</span><span class="badge badge-accent">Copilot</span></div><span class="tf-arrow"><i class="fas fa-arrow-right"></i></span></div>
+        <div class="tf-head"><div class="tf-icon" style="background:rgba(14,165,233,0.1);color:#38bdf8"><i class="fas fa-robot"></i></div><div><h3>AI Agent</h3><div class="tf-sub">可编排智能代理</div></div></div>
+        <p>自定义 Agent 自动执行复杂任务链，支持插件扩展与工具调用。</p>
+        <div class="tf-footer"><div class="tf-tags"><span class="badge badge-cyan">可编排</span><span class="badge badge-accent">插件</span></div><span class="tf-arrow"><i class="fas fa-arrow-right"></i></span></div>
+        <div class="tf-head"><div class="tf-icon" style="background:rgba(34,197,94,0.1);color:#4ade80"><i class="fas fa-plug"></i></div><div><h3>API 接入</h3><div class="tf-sub">统一 API 端点</div></div></div>
+        <p>OpenAI 兼容格式，一个 Key 访问所有模型，企业级限流。</p>
+        <div class="tf-footer"><div class="tf-tags"><span class="badge badge-green">RESTful</span><span class="badge badge-yellow">流式</span></div><span class="tf-arrow"><i class="fas fa-arrow-right"></i></span></div>
+        <div class="tf-head"><div class="tf-icon" style="background:rgba(168,85,247,0.1);color:#c084fc"><i class="fas fa-magnifying-glass"></i></div><div><h3>AI 搜索</h3><div class="tf-sub">实时联网搜索</div></div></div>
+        <p>AI 摘要与引用溯源，实时联网获取最新信息。</p>
+        <div class="tf-footer"><div class="tf-tags"><span class="badge badge-accent">实时联网</span><span class="badge badge-cyan">溯源</span></div><span class="tf-arrow"><i class="fas fa-arrow-right"></i></span></div>
+<section class="section" style="background:rgba(255,255,255,0.01)">
+    <div class="reveal"><div class="section-label"><i class="fas fa-sparkles"></i> 核心能力</div><h2 class="section-title">为什么选择 CWJ TOOLS</h2></div>
+    <div class="feature-row reveal" style="margin-top:48px">
+      <div class="feature-visual" data-tilt>
+        <div class="feature-code">
+          <div><span class="cm">// 统一 API — 一个端点调用所有模型</span></div>
+          <div><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.cwj.tools/v1/chat'</span>, {</div>
+          <div>&nbsp;&nbsp;method: <span class="str">'POST'</span>,</div>
+          <div>&nbsp;&nbsp;headers: { <span class="str">'Authorization'</span>: <span class="str">`Bearer ${KEY}`</span> },</div>
+          <div>&nbsp;&nbsp;body: <span class="fn">JSON</span>.<span class="fn">stringify</span>({ model: <span class="str">'gpt-4o'</span>, stream: <span class="kw">true</span> })</div>
+          <div>});</div>
+        </div>
+      <div class="feature-text">
+        <h3>统一 API，无限可能</h3>
+        <p>OpenAI 兼容格式，一个 API Key 访问 180+ 模型。流式输出、函数调用、多模态输入。</p>
+        <ul class="feature-list">
+          <li><i class="fas fa-check"></i> GPT-4o / Claude 4 / Gemini 2.5 / Llama 4</li>
+          <li><i class="fas fa-check"></i> 流式输出 & 实时 Token 统计</li>
+          <li><i class="fas fa-check"></i> 函数调用 & 结构化输出</li>
+          <li><i class="fas fa-check"></i> 企业级限流 & 用量监控</li>
+        </ul>
+<section class="section">
+    <div class="reveal">
+      <div class="section-label"><i class="fas fa-chart-line"></i> 平台数据</div>
+      <h2 class="section-title">实时运行数据</h2>
+    <div class="stats-grid" data-stagger>
+      <div class="stat-card reveal"><div class="stat-icon" style="background:rgba(99,102,241,0.1);color:#818cf8"><i class="fas fa-users"></i></div><div class="stat-num" style="color:#818cf8" data-count="2600000" data-large="true" data-suffix="+">0</div><div class="stat-label">注册用户</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 23.5%</div></div>
+      <div class="stat-card reveal"><div class="stat-icon" style="background:rgba(6,182,212,0.1);color:#22d3ee"><i class="fas fa-bolt"></i></div><div class="stat-num" style="color:#22d3ee" data-count="850" data-large="true" data-suffix="M+">0</div><div class="stat-label">API 调用/月</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 41.2%</div></div>
+      <div class="stat-card reveal"><div class="stat-icon" style="background:rgba(34,197,94,0.1);color:#4ade80"><i class="fas fa-server"></i></div><div class="stat-num" style="color:#4ade80" data-count="99.97" data-decimals="2" data-suffix="%">0</div><div class="stat-label">可用率</div><div class="stat-change up"><i class="fas fa-arrow-up"></i> 0.02%</div></div>
+      <div class="stat-card reveal"><div class="stat-icon" style="background:rgba(251,191,36,0.1);color:#fbbf24"><i class="fas fa-clock"></i></div><div class="stat-num" style="color:#fbbf24" data-count="38" data-suffix="ms">0</div><div class="stat-label">响应延迟</div><div class="stat-change up"><i class="fas fa-arrow-down"></i> 12.8%</div></div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><h3><div class="logo-icon" style="width:28px;height:28px;border-radius:7px;background:var(--g-1);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800">C</div> CWJ TOOLS</h3><p>AI 全能工具平台，为全球开发者与创作者提供最强大的 AI 生产力工具。</p></div>
+      <div class="footer-col"><h4>产品</h4><a href="chat.html">AI 聊天</a><a href="agent.html">AI Agent</a><a href="models.html">模型管理</a><a href="dashboard.html">控制台</a></div>
+      <div class="footer-col"><h4>资源</h4><a href="#">开发文档</a><a href="#">API 参考</a><a href="#">定价方案</a><a href="#">更新日志</a></div>
+      <div class="footer-col"><h4>账户</h4><a href="profile.html">个人中心</a><a href="settings.html">设置</a><a href="#">隐私政策</a><a href="#">服务条款</a></div>
+    <div class="footer-bottom">
+      <span>© 2026 CWJ TOOLS. All rights reserved.</span>
+      <div class="footer-social"><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-discord"></i></a></div>
+</footer>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="api.js"></script>
+<script src="shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  CWJ.animateCounters(document.querySelector('.hero'));
+  setTimeout(function(){CWJ.animateCounters(document)},300);
+});
+</script>
+</body>
+</html>
